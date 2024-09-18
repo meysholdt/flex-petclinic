@@ -4,7 +4,7 @@ tasks:
     command: |
       ## ?? What's my expected path?
       cd /workspace/flex-petclinic
-      mvn package
+      ./mvnw -Dmaven.test.skip=true -B package
   release:
     name: Install API tools
     dependsOn:
