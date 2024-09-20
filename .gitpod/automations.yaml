@@ -5,11 +5,16 @@ tasks:
       ## ?? What's my expected path?
       cd /workspace/flex-petclinic
       ./mvnw -Dmaven.test.skip=true -B package
+    triggeredBy:
+      - manual
   release:
-    name: Install API tools
+    name: Release
     dependsOn:
       - package
+    triggeredBy:
+      - manual
     command: |
+      source ./set_gh_token.sh
       REPO="meysholdt/flex-petclinic"
       TAG_NAME="v1.0.0"
       RELEASE_TITLE="Release $TAG_NAME"
@@ -18,7 +23,9 @@ tasks:
 
       # Create the release
       gh release create "$TAG_NAME" "$FILE_NAME" \
-          --verify-tag
           --repo "$REPO" \
           --title "$RELEASE_TITLE" \
           --notes "$RELEASE_NOTES"
+
+
+#                    --verify-tag
