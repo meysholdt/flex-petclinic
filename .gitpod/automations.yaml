@@ -1,8 +1,32 @@
+services:
+  app:
+    name: App
+    dependsOn:
+      - postgres
+    trigger:
+      - onStart
+      - manual
+    commands:
+      start: |
+        ./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
+      ready:
+        curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 | grep -q "200"
+
+  postgres:
+    name: Postgres
+    trigger:
+      - onStart
+      - manual
+    commands:
+      start: |
+        docker-compose --profile postgres up
+      ready:
+        PGPASSWORD="petclinic" psql -h localhost -U petclinic -d petclinic -c '\q' >/dev/null 2>&1  
+
 tasks:
   package:
-    name: Package App
+    name: Package
     command: |
-      ## ?? What's my expected path?
       cd /workspace/flex-petclinic
       ./mvnw -Dmaven.test.skip=true -B package
     triggeredBy:
